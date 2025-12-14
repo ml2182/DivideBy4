@@ -4,6 +4,7 @@ I wanted produce a SystemVerilog program to test one of my Tripos exam answer. I
 
 ## Digital Circuit Design
 <img width="295" height="179" alt="image" src="https://github.com/user-attachments/assets/c10640ca-62db-4d47-96d7-a68c18cecfc4" />
+
 ## Analysis
 I created a counter which responded to the inputs correctly. However, due to the design of the digital circuit, I ran into an error because the input of the B Bistable is the output of the A Bistable. This caused 2 clock cycle delay as it would take 1 clock cycle to update the first Bistable and another to update the second. I figured that you could remove this delay if you change line 57 in the IntegratedDesign.sv to use combinational logic. However, I do not know whether that would lead it to be an asynchronous system. 
 <img width="1236" height="161" alt="image" src="https://github.com/user-attachments/assets/3a2afaaf-99a5-4780-bb5e-24872eb1770a" />
