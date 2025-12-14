@@ -25,7 +25,6 @@ logic clk;
 logic reset;
 logic signal_in;
 logic [1:0] signal_out;
-logic [1:0] temp;
 IntegratedDesign uut (
             .clk(clk),
             .reset(reset),
@@ -33,52 +32,37 @@ IntegratedDesign uut (
             .signal_out(signal_out));
 initial begin
     clk = 0;
-    temp = signal_out;
+    reset = 1;
     signal_in = 0;
-    #20 reset = 1;
-    #5 reset=0;
-    temp = signal_out;
-    @(posedge clk);
-    #30 // because it is synchronous there is a clock cycle delay
-    if (signal_out == 2'b01) begin
-        $display ("Correctly Counts Up, Time = %0t, Old = %b, New = %b",$time, temp, signal_out);
-    end else begin
-        $display ("Incorrectly Counts Up, Time = %0t, Old = %b, New = %b",$time, temp, signal_out); 
-    end
-    temp = signal_out;
-    #20
-    if (signal_out == 2'b10) begin
-        $display ("Correctly Counts Up, Time = %0t, Old = %b, New = %b",$time, temp, signal_out);
-    end else begin
-        $display ("Incorrectly Counts Up, Time = %0t, Old = %b, New = %b",$time, temp, signal_out); 
-    end
-    temp = signal_out;
-    #20
-    if (signal_out == 2'b11) begin
-        $display ("Correctly Counts Up, Time = %0t, Old = %b, New = %b",$time, temp, signal_out);
-    end else begin
-        $display ("Incorrectly Counts Up, Time = %0t, Old = %b, New = %b",$time, temp, signal_out); 
-    end
-    temp = signal_out;
-    #20
-    if (signal_out == 2'b00) begin
-        $display ("Correctly Counts Up, Time = %0t, Old = %b, New = %b",$time, temp, signal_out);
-    end else begin
-        $display ("Incorrectly Counts Up, Time = %0t, Old = %b, New = %b",$time, temp, signal_out); 
-    end
-    #10
-    
+    repeat (2) @(posedge clk);
+    reset = 0;
+    @(posedge clk);  
+    // Count up
+    check_count(2'b01, "count up 0->1");
+    check_count(2'b10, "count up 1->2");
+    check_count(2'b11, "count up 2->3");
+    check_count(2'b00, "count up 3->0");
+
+    // Count down
     signal_in = 1;
-    #10
-    temp = signal_out;
-    #20
-    if (signal_out == 2'b00) begin
-        $display ("Correctly Counts Down, Time = %0t, Old = %b, New = %b",$time, temp, signal_out);
-    end else begin
-        $display ("Incorrectly Counts Down, Time = %0t, Old = %b, New = %b",$time, temp, signal_out); 
-    end
-    
+    check_count(2'b11, "count down 0->3");
+    check_count(2'b10, "count down 3->2");
+    check_count(2'b01, "count down 2->1");
+    check_count(2'b00, "count down 1->0");
+
+    $display("Test completed");
+    $finish;
 end
+task check_count(input[1:0] expected, input string msg); 
+    begin
+    @(posedge clk);   // wait for current edge 
+    if (signal_out === expected) 
+        $display("PASS: %s at %0t, value=%b", msg, $time, signal_out);
+    else
+        $display("FAIL: %s at %0t, expected=%b got=%b",msg, $time, expected, signal_out);
+    end
+
+endtask
 always begin
     #10 clk = ~clk; // 50MHz clock
 end
