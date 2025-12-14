@@ -39,36 +39,40 @@ initial begin
     #5 reset=0;
     temp = signal_out;
     @(posedge clk);
-    #5
+    #30 // because it is synchronous there is a clock cycle delay
     if (signal_out == 2'b01) begin
         $display ("Correctly Counts Up, Time = %0t, Old = %b, New = %b",$time, temp, signal_out);
     end else begin
         $display ("Incorrectly Counts Up, Time = %0t, Old = %b, New = %b",$time, temp, signal_out); 
     end
     temp = signal_out;
-    #15 signal_in = 0;
-    #5 if (signal_out == 2'b10) begin
+    #20
+    if (signal_out == 2'b10) begin
         $display ("Correctly Counts Up, Time = %0t, Old = %b, New = %b",$time, temp, signal_out);
     end else begin
         $display ("Incorrectly Counts Up, Time = %0t, Old = %b, New = %b",$time, temp, signal_out); 
     end
     temp = signal_out;
-    #15 signal_in = 0;
-    #5 if (signal_out == 2'b11) begin
+    #20
+    if (signal_out == 2'b11) begin
         $display ("Correctly Counts Up, Time = %0t, Old = %b, New = %b",$time, temp, signal_out);
     end else begin
         $display ("Incorrectly Counts Up, Time = %0t, Old = %b, New = %b",$time, temp, signal_out); 
     end
     temp = signal_out;
-    #15 signal_in = 0;
-    #5 if (signal_out == 2'b00) begin
+    #20
+    if (signal_out == 2'b00) begin
         $display ("Correctly Counts Up, Time = %0t, Old = %b, New = %b",$time, temp, signal_out);
     end else begin
         $display ("Incorrectly Counts Up, Time = %0t, Old = %b, New = %b",$time, temp, signal_out); 
     end
+    #10
+    
+    signal_in = 1;
+    #10
     temp = signal_out;
-    #15 signal_in = 1;
-    #10 if (signal_out == 2'b11) begin
+    #20
+    if (signal_out == 2'b00) begin
         $display ("Correctly Counts Down, Time = %0t, Old = %b, New = %b",$time, temp, signal_out);
     end else begin
         $display ("Incorrectly Counts Down, Time = %0t, Old = %b, New = %b",$time, temp, signal_out); 

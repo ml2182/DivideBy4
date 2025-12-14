@@ -54,7 +54,7 @@ module IntegratedDesign(
         J_B = Q_A ^ signal_in;
         K_B = Q_A ^ signal_in;
     end
-    always_comb begin
+    always_ff @(posedge clk or posedge reset) begin
         if (reset) begin
             signal_out = 2'b00;
         end else begin
